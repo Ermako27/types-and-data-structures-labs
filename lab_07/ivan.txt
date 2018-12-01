@@ -1,0 +1,147 @@
+#define CMP_LT(a, b) ((a) <= (b))
+#define CMP_GT(a, b) ((a) > (b))
+
+
+
+Node* getFreeNode(int value, char *word, Node *parent) 
+{
+    Node* tmp = (Node*) malloc(sizeof(Node));
+    tmp->left = tmp->right = NULL;
+    tmp->data = value;
+    tmp->word = word;
+    tmp->parent = parent;
+    return tmp;
+}
+
+
+
+void insert(Node **head, int value, char *word) // вставка в дерево
+{
+    Node *tmp = NULL;
+    Node *ins = NULL;
+    if (*head == NULL) 
+    {
+        *head = getFreeNode(value, word, NULL);
+        return;
+    }
+     
+    tmp = *head;
+    while (tmp) 
+    {
+        if (CMP_GT(value, tmp->data)) 
+        {
+            if (tmp->right) 
+            {
+                tmp = tmp->right;
+                continue;
+            } 
+            else 
+            {
+                tmp->right = getFreeNode(value, word, tmp);
+                return;
+            }
+        } 
+        else if (CMP_LT(value, tmp->data)) 
+        {
+            if (tmp->left) 
+            {
+                tmp = tmp->left;
+                continue;
+            } 
+            else 
+            {
+                tmp->left = getFreeNode(value, word, tmp);
+                return;
+            }
+        } 
+    }
+}
+
+
+/////////////////////////БАЛАНСИРОВКА//////////////////////////
+
+int HeightOfTree(Node* node)
+{
+    if(node == NULL)
+        return 0;
+    int l, r;
+    if (node->left != NULL)
+    {
+        l = HeightOfTree(node->left);
+    }
+    else 
+        l = -1;
+    if (node->right != NULL) 
+    {
+        r = HeightOfTree(node->right);
+    }
+    else 
+        r = -1;
+    
+    int max = l > r ? l : r;
+    return max+1;
+
+}
+
+
+
+unsigned char height(Node* p)
+{
+    return p?p->height:0;
+}
+
+int bfactor(Node* p)
+{
+    // printf("height: %d\n", height(p->right)-height(p->left) );
+    return height(p->right)-height(p->left);
+}
+
+void fixheight(Node* p)
+{
+    unsigned char hl = height(p->left);
+    unsigned char hr = height(p->right);
+    p->height = (hl>hr?hl:hr)+1;
+}
+
+Node* rotateright(Node* p) // правый поворот вокруг p
+{
+    Node* q = p->left;
+    p->left = q->right;
+    q->right = p;
+    fixheight(p);
+    fixheight(q);
+    return q;
+}
+
+
+Node* rotateleft(Node* q) // левый поворот вокруг q
+{
+    Node* p = q->right;
+    q->right = p->left;
+    p->left = q;
+    fixheight(q);
+    fixheight(p);
+    return p;
+}
+
+
+
+Node* balance(Node* p) // балансировка узла p
+{
+    fixheight(p);
+    if( bfactor(p)==2 )
+    {
+        if( bfactor(p->right) < 0 )
+            p->right = rotateright(p->right);
+        return rotateleft(p);
+    }
+    if( bfactor(p)==-2 )
+    {
+        printf("2\n");
+        if( bfactor(p->left) > 0  )
+            p->left = rotateleft(p->left);
+        return rotateright(p);
+    }
+    return p; // балансировка не нужна
+}
+

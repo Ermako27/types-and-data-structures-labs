@@ -1,0 +1,5 @@
+graph MyPlan {
+    node [shape = circle];
+  
+    "Понедельник"--"Тренировка";
+}

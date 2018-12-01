@@ -1,0 +1,33 @@
+void printMinimalPathway(list *G[100], int N, int weights[100][100], char city[100][100], int A, int B)
+{
+	int d[100], Pr[100];
+	for (int i = 0; i < N; i++)
+	{
+		d[i] = 100000;
+		Pr[i] = -1;
+	}
+
+	d[A] = 0;
+	list *Q = new_list();
+	for (int i = 0; i < N; i++)
+	{
+		push(Q, i);
+	}
+	while (Q != Q->next)
+	{
+		int u = pop(Q, d);
+		list *cur = G[u];
+		while (G[u] != (cur = cur->next))
+		{
+			int v = cur->data;
+			if (d[v] > d[u] + weights[u][v])
+			{
+				d[v] = d[u] + weights[u][v];
+				Pr[v] = u;
+			}
+		}
+	}
+
+	_printPath(A, B, city, Pr);
+}
+

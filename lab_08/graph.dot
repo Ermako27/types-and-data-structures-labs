@@ -1,0 +1,13 @@
+graph BST {
+    node [fontname="Arial"];
+    A--B[label=4]
+    A--C[label=4]
+    B--C[label=10]
+    B--D[label=4]
+    C--D[label=2]
+    E--C[label=16]
+    C--F[label=22]
+    G--E[label=4]
+    G--F[label=2]
+    F--H[label=7]
+}
